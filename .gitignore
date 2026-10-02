@@ -1,0 +1,17 @@
+# Credentials
+connections.toml
+secrets.toml
+.env
+*.key
+*.pem
+
+# Snowflake CLI build output
+sentinel_app/output/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+__pycache__/
+*.pyc

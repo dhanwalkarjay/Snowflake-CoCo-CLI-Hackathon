@@ -1,0 +1,17 @@
+version: 1
+artifacts:
+  - path: SENTINEL_SV.sv.yaml
+    type: semantic_view
+    targets:
+      default:
+        object: SENTINEL_DB.APP.SENTINEL_SV
+  - path: C:\temp\sentinel_agent.yaml
+    type: cortex_agent
+    targets:
+      default:
+        object: SENTINEL_DB.APP.SENTINEL_AGENT
+  - path: C:\temp\sentinel_agent_v2.yaml
+    type: cortex_agent
+    targets:
+      default:
+        object: SENTINEL_DB.APP.SENTINEL_AGENT

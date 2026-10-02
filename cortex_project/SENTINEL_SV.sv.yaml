@@ -1,0 +1,496 @@
+name: SENTINEL_SV
+description: 'Banking fraud, AML and regulatory reporting copilot. Covers customers,
+  accounts, transactions, loans, liquidity, alerts and detection rules. IMPORTANT:
+  RAW.FRAUD_TRUTH is excluded - never expose ground truth labels.'
+tables:
+  - name: DIM_CUSTOMERS
+    base_table:
+      database: SENTINEL_DB
+      schema: CORE
+      table: DIM_CUSTOMERS
+    primary_key:
+      columns:
+        - CUSTOMER_ID
+    dimensions:
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_TYPE
+        expr: CUSTOMER_TYPE
+        data_type: VARCHAR
+      - name: FULL_NAME
+        expr: FULL_NAME
+        data_type: VARCHAR
+      - name: NATIONALITY
+        expr: NATIONALITY
+        data_type: VARCHAR
+      - name: CITY
+        expr: CITY
+        data_type: VARCHAR
+      - name: STATE
+        expr: STATE
+        data_type: VARCHAR
+      - name: COUNTRY
+        expr: COUNTRY
+        data_type: VARCHAR
+      - name: KYC_STATUS
+        expr: KYC_STATUS
+        data_type: VARCHAR
+      - name: RISK_RATING
+        expr: RISK_RATING
+        data_type: VARCHAR
+      - name: PEP_FLAG
+        expr: PEP_FLAG
+        data_type: BOOLEAN
+      - name: TENURE_DAYS
+        expr: TENURE_DAYS
+        data_type: NUMBER
+      - name: KYC_OVERDUE_FLAG
+        expr: KYC_OVERDUE_FLAG
+        data_type: BOOLEAN
+    time_dimensions:
+      - name: DATE_OF_BIRTH
+        expr: DATE_OF_BIRTH
+        data_type: DATE
+      - name: KYC_VERIFIED_AT
+        expr: KYC_VERIFIED_AT
+        data_type: TIMESTAMP_NTZ
+      - name: ONBOARDED_AT
+        expr: ONBOARDED_AT
+        data_type: TIMESTAMP_NTZ
+  - name: DIM_ACCOUNTS
+    base_table:
+      database: SENTINEL_DB
+      schema: CORE
+      table: DIM_ACCOUNTS
+    primary_key:
+      columns:
+        - ACCOUNT_ID
+    dimensions:
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: ACCOUNT_TYPE
+        expr: ACCOUNT_TYPE
+        data_type: VARCHAR
+      - name: CURRENCY
+        expr: CURRENCY
+        data_type: VARCHAR
+      - name: STATUS
+        expr: STATUS
+        data_type: VARCHAR
+      - name: BRANCH_CODE
+        expr: BRANCH_CODE
+        data_type: VARCHAR
+      - name: IFSC_CODE
+        expr: IFSC_CODE
+        data_type: VARCHAR
+      - name: ACCOUNT_AGE_DAYS
+        expr: ACCOUNT_AGE_DAYS
+        data_type: NUMBER
+    time_dimensions:
+      - name: OPENED_AT
+        expr: OPENED_AT
+        data_type: TIMESTAMP_NTZ
+      - name: CLOSED_AT
+        expr: CLOSED_AT
+        data_type: TIMESTAMP_NTZ
+    facts:
+      - name: CURRENT_BALANCE
+        expr: CURRENT_BALANCE
+        data_type: NUMBER
+  - name: FACT_TRANSACTIONS
+    base_table:
+      database: SENTINEL_DB
+      schema: CORE
+      table: FACT_TRANSACTIONS
+    dimensions:
+      - name: TXN_ID
+        expr: TXN_ID
+        data_type: VARCHAR
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: TXN_TYPE
+        expr: TXN_TYPE
+        data_type: VARCHAR
+      - name: TXN_METHOD
+        expr: TXN_METHOD
+        data_type: VARCHAR
+      - name: CURRENCY
+        expr: CURRENCY
+        data_type: VARCHAR
+      - name: COUNTERPARTY_NAME
+        expr: COUNTERPARTY_NAME
+        data_type: VARCHAR
+      - name: COUNTERPARTY_ACCT
+        expr: COUNTERPARTY_ACCT
+        data_type: VARCHAR
+      - name: COUNTERPARTY_COUNTRY
+        expr: COUNTERPARTY_COUNTRY
+        data_type: VARCHAR
+      - name: REMITTANCE_INFO
+        expr: REMITTANCE_INFO
+        data_type: VARCHAR
+      - name: CHANNEL
+        expr: CHANNEL
+        data_type: VARCHAR
+      - name: DEVICE_ID
+        expr: DEVICE_ID
+        data_type: VARCHAR
+      - name: IP_ADDRESS
+        expr: IP_ADDRESS
+        data_type: VARCHAR
+      - name: STATUS
+        expr: STATUS
+        data_type: VARCHAR
+      - name: IS_CROSS_BORDER
+        expr: IS_CROSS_BORDER
+        data_type: BOOLEAN
+      - name: IS_HIGH_VALUE
+        expr: IS_HIGH_VALUE
+        data_type: BOOLEAN
+      - name: IS_CTR_REPORTABLE
+        expr: IS_CTR_REPORTABLE
+        data_type: BOOLEAN
+    time_dimensions:
+      - name: TXN_TIMESTAMP
+        expr: TXN_TIMESTAMP
+        data_type: TIMESTAMP_NTZ
+      - name: TXN_DATE
+        expr: TXN_DATE
+        data_type: DATE
+    facts:
+      - name: AMOUNT
+        expr: AMOUNT
+        data_type: NUMBER
+      - name: GEO_LATITUDE
+        expr: GEO_LATITUDE
+        data_type: NUMBER
+      - name: GEO_LONGITUDE
+        expr: GEO_LONGITUDE
+        data_type: NUMBER
+  - name: FACT_LOANS
+    base_table:
+      database: SENTINEL_DB
+      schema: CORE
+      table: FACT_LOANS
+    primary_key:
+      columns:
+        - ACCOUNT_ID
+    dimensions:
+      - name: LOAN_ID
+        expr: LOAN_ID
+        data_type: VARCHAR
+      - name: CUSTOMER_ID
+        expr: CUSTOMER_ID
+        data_type: VARCHAR
+      - name: ACCOUNT_ID
+        expr: ACCOUNT_ID
+        data_type: VARCHAR
+      - name: LOAN_TYPE
+        expr: LOAN_TYPE
+        data_type: VARCHAR
+      - name: TENURE_MONTHS
+        expr: TENURE_MONTHS
+        data_type: NUMBER
+      - name: DPD
+        expr: DPD
+        data_type: NUMBER
+      - name: NPA_FLAG
+        expr: NPA_FLAG
+        data_type: BOOLEAN
+      - name: STATUS
+        expr: STATUS
+        data_type: VARCHAR
+      - name: ASSET_CLASSIFICATION
+        expr: ASSET_CLASSIFICATION
+        data_type: VARCHAR
+      - name: SMA_CATEGORY
+        expr: SMA_CATEGORY
+        data_type: VARCHAR
+    time_dimensions:
+      - name: DISBURSED_AT
+        expr: DISBURSED_AT
+        data_type: TIMESTAMP_NTZ
+      - name: MATURITY_DATE
+        expr: MATURITY_DATE
+        data_type: DATE
+    facts:
+      - name: PRINCIPAL
+        expr: PRINCIPAL
+        data_type: NUMBER
+      - name: INTEREST_RATE
+        expr: INTEREST_RATE
+        data_type: NUMBER
+      - name: EMI_AMOUNT
+        expr: EMI_AMOUNT
+        data_type: NUMBER
+      - name: OUTSTANDING_BALANCE
+        expr: OUTSTANDING_BALANCE
+        data_type: NUMBER
+    unique_keys:
+      - columns:
+          - CUSTOMER_ID
+  - name: FACT_LIQUIDITY
+    base_table:
+      database: SENTINEL_DB
+      schema: CORE
+      table: FACT_LIQUIDITY
+    dimensions:
+      - name: POSITION_ID
+        expr: POSITION_ID
+        data_type: VARCHAR
+      - name: BUCKET
+        expr: BUCKET
+        data_type: VARCHAR
+      - name: ASSET_CLASS
+        expr: ASSET_CLASS
+        data_type: VARCHAR
+      - name: LCR_BREACH
+        expr: LCR_BREACH
+        data_type: BOOLEAN
+      - name: NSFR_BREACH
+        expr: NSFR_BREACH
+        data_type: BOOLEAN
+    time_dimensions:
+      - name: REPORTING_DATE
+        expr: REPORTING_DATE
+        data_type: DATE
+    facts:
+      - name: INFLOWS
+        expr: INFLOWS
+        data_type: NUMBER
+      - name: OUTFLOWS
+        expr: OUTFLOWS
+        data_type: NUMBER
+      - name: NET_POSITION
+        expr: NET_POSITION
+        data_type: NUMBER
+      - name: CUMULATIVE_GAP
+        expr: CUMULATIVE_GAP
+        data_type: NUMBER
+      - name: LCR_RATIO
+        expr: LCR_RATIO
+        data_type: NUMBER
+      - name: NSFR_RATIO
+        expr: NSFR_RATIO
+        data_type: NUMBER
+  - name: ALERTS
+    base_table:
+      database: SENTINEL_DB
+      schema: RISK
+      table: ALERTS
+    primary_key:
+      columns:
+        - ALERT_ID
+    dimensions:
+      - name: ALERT_ID
+        expr: ALERT_ID
+        data_type: VARCHAR
+      - name: RULE_ID
+        expr: RULE_ID
+        data_type: VARCHAR
+      - name: ENTITY_TYPE
+        expr: ENTITY_TYPE
+        data_type: VARCHAR
+      - name: ENTITY_ID
+        expr: ENTITY_ID
+        data_type: VARCHAR
+      - name: ALERT_TYPE
+        expr: ALERT_TYPE
+        data_type: VARCHAR
+      - name: SEVERITY
+        expr: SEVERITY
+        data_type: VARCHAR
+      - name: REASON
+        expr: REASON
+        data_type: VARCHAR
+      - name: STATUS
+        expr: STATUS
+        data_type: VARCHAR
+    time_dimensions:
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+    facts:
+      - name: SCORE
+        expr: SCORE
+        data_type: NUMBER
+  - name: RULES
+    base_table:
+      database: SENTINEL_DB
+      schema: RISK
+      table: RULES
+    primary_key:
+      columns:
+        - RULE_ID
+    dimensions:
+      - name: RULE_ID
+        expr: RULE_ID
+        data_type: VARCHAR
+      - name: RULE_NAME
+        expr: RULE_NAME
+        data_type: VARCHAR
+      - name: DESCRIPTION
+        expr: DESCRIPTION
+        data_type: VARCHAR
+      - name: TYPOLOGY
+        expr: TYPOLOGY
+        data_type: VARCHAR
+      - name: THRESHOLD_PARAMS
+        expr: THRESHOLD_PARAMS
+        data_type: VARIANT
+      - name: REGULATION_REF
+        expr: REGULATION_REF
+        data_type: VARCHAR
+      - name: SEVERITY_DEFAULT
+        expr: SEVERITY_DEFAULT
+        data_type: VARCHAR
+      - name: IS_ACTIVE
+        expr: IS_ACTIVE
+        data_type: BOOLEAN
+    time_dimensions:
+      - name: CREATED_AT
+        expr: CREATED_AT
+        data_type: TIMESTAMP_NTZ
+relationships:
+  - name: ALERTS_TO_DIM_ACCOUNTS
+    left_table: ALERTS
+    right_table: DIM_ACCOUNTS
+    join_type: inner
+    relationship_type: many_to_one
+    relationship_columns:
+      - left_column: ENTITY_ID
+        right_column: ACCOUNT_ID
+  - name: ALERTS_TO_RULES
+    left_table: ALERTS
+    right_table: RULES
+    join_type: inner
+    relationship_type: many_to_one
+    relationship_columns:
+      - left_column: RULE_ID
+        right_column: RULE_ID
+  - name: DIM_ACCOUNTS_TO_DIM_CUSTOMERS
+    left_table: DIM_ACCOUNTS
+    right_table: DIM_CUSTOMERS
+    join_type: inner
+    relationship_type: many_to_one
+    relationship_columns:
+      - left_column: CUSTOMER_ID
+        right_column: CUSTOMER_ID
+  - name: FACT_LOANS_TO_DIM_ACCOUNTS
+    left_table: FACT_LOANS
+    right_table: DIM_ACCOUNTS
+    join_type: inner
+    relationship_type: one_to_one
+    relationship_columns:
+      - left_column: ACCOUNT_ID
+        right_column: ACCOUNT_ID
+  - name: FACT_TRANSACTIONS_TO_DIM_ACCOUNTS
+    left_table: FACT_TRANSACTIONS
+    right_table: DIM_ACCOUNTS
+    join_type: inner
+    relationship_type: many_to_one
+    relationship_columns:
+      - left_column: ACCOUNT_ID
+        right_column: ACCOUNT_ID
+verified_queries:
+  - name: 0;1
+    question: Which accounts have the highest structuring alert scores?
+    sql: SELECT a.ENTITY_ID AS ACCOUNT_ID, a.SCORE, a.REASON FROM alerts AS a WHERE
+      a.ALERT_TYPE = 'STRUCTURING' ORDER BY a.SCORE DESC LIMIT 10
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 1;1
+    question: What is the weekly alert volume for each detection rule?
+    sql: SELECT r.RULE_NAME, DATE_TRUNC('WEEK', a.CREATED_AT) AS WEEK, COUNT(*) AS
+      ALERT_COUNT FROM alerts AS a JOIN rules AS r ON a.RULE_ID = r.RULE_ID GROUP
+      BY r.RULE_NAME, WEEK ORDER BY WEEK, ALERT_COUNT DESC
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 2;1
+    question: What is the non-performing asset ratio by city?
+    sql: SELECT c.CITY, COUNT(CASE WHEN l.DPD > 90 THEN 1 END) AS NPA_COUNT, COUNT(*)
+      AS TOTAL_LOANS, ROUND(COUNT(CASE WHEN l.DPD > 90 THEN 1 END) * 100.0 / COUNT(*),
+      2) AS NPA_RATIO_PCT FROM fact_loans AS l JOIN dim_accounts AS ac ON l.ACCOUNT_ID
+      = ac.ACCOUNT_ID JOIN dim_customers AS c ON ac.CUSTOMER_ID = c.CUSTOMER_ID GROUP
+      BY c.CITY ORDER BY NPA_RATIO_PCT DESC
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 3;1
+    question: What was the lowest liquidity coverage ratio on each day when it fell
+      below the required threshold?
+    sql: SELECT REPORTING_DATE, MIN(LCR_RATIO) AS MIN_LCR FROM fact_liquidity WHERE
+      LCR_BREACH = TRUE GROUP BY REPORTING_DATE ORDER BY REPORTING_DATE
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 4;1
+    question: What are the cash deposits just under 10 lakh in the last 30 days?
+    sql: SELECT TXN_ID, ACCOUNT_ID, AMOUNT, TXN_DATE FROM fact_transactions WHERE
+      TXN_METHOD = 'CASH' AND TXN_TYPE = 'CREDIT' AND AMOUNT BETWEEN 800000 AND 999999
+      AND TXN_DATE >= DATEADD(DAY, -30, CURRENT_DATE) ORDER BY AMOUNT DESC
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 5;1
+    question: How many open alerts are there by severity level?
+    sql: SELECT SEVERITY, COUNT(*) AS ALERT_COUNT FROM alerts WHERE STATUS = 'OPEN'
+      GROUP BY SEVERITY ORDER BY CASE SEVERITY WHEN 'CRITICAL' THEN 1 WHEN 'HIGH'
+      THEN 2 WHEN 'MEDIUM' THEN 3 WHEN 'LOW' THEN 4 END
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 6;1
+    question: What is the total transaction volume by payment method?
+    sql: SELECT TXN_METHOD, COUNT(*) AS TXN_COUNT, SUM(AMOUNT) AS TOTAL_VOLUME FROM
+      fact_transactions GROUP BY TXN_METHOD ORDER BY TOTAL_VOLUME DESC
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 7;1
+    question: Which high-risk customers have the most open alerts and what are their
+      average alert scores?
+    sql: SELECT c.CUSTOMER_ID, c.FULL_NAME, c.RISK_RATING, COUNT(a.ALERT_ID) AS ALERT_COUNT,
+      ROUND(AVG(a.SCORE), 3) AS AVG_SCORE FROM dim_customers AS c JOIN dim_accounts
+      AS ac ON c.CUSTOMER_ID = ac.CUSTOMER_ID JOIN alerts AS a ON a.ENTITY_ID = ac.ACCOUNT_ID
+      WHERE c.RISK_RATING IN ('HIGH', 'PEP', 'SANCTIONED') AND a.STATUS = 'OPEN' GROUP
+      BY c.CUSTOMER_ID, c.FULL_NAME, c.RISK_RATING ORDER BY ALERT_COUNT DESC LIMIT
+      20
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 8;1
+    question: Which dormant accounts have had significant transaction activity in
+      the past week?
+    sql: SELECT ac.ACCOUNT_ID, ac.STATUS, COUNT(t.TXN_ID) AS RECENT_TXNS, SUM(t.AMOUNT)
+      AS TOTAL_AMOUNT FROM dim_accounts AS ac JOIN fact_transactions AS t ON ac.ACCOUNT_ID
+      = t.ACCOUNT_ID WHERE ac.STATUS = 'DORMANT' AND t.TXN_DATE >= DATEADD(DAY, -7,
+      CURRENT_DATE) GROUP BY ac.ACCOUNT_ID, ac.STATUS HAVING COUNT(t.TXN_ID) >= 5
+      ORDER BY RECENT_TXNS DESC
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 9;1
+    question: What is the average alert score by alert type?
+    sql: SELECT ALERT_TYPE, COUNT(*) AS ALERT_COUNT, ROUND(AVG(SCORE), 3) AS AVG_SCORE,
+      ROUND(MIN(SCORE), 3) AS MIN_SCORE, ROUND(MAX(SCORE), 3) AS MAX_SCORE FROM alerts
+      GROUP BY ALERT_TYPE ORDER BY AVG_SCORE DESC
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 10;1
+    question: What is the distribution of loan count and total exposure across different
+      SMA categories?
+    sql: SELECT SMA_CATEGORY, COUNT(*) AS LOAN_COUNT, SUM(OUTSTANDING_BALANCE) AS
+      TOTAL_EXPOSURE FROM fact_loans WHERE NOT SMA_CATEGORY IS NULL GROUP BY SMA_CATEGORY
+      ORDER BY SMA_CATEGORY
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator
+  - name: 11;1
+    question: What is the cross-border transaction volume by country?
+    sql: SELECT t.COUNTERPARTY_COUNTRY, COUNT(*) AS TXN_COUNT, SUM(t.AMOUNT) AS TOTAL_VOLUME
+      FROM fact_transactions AS t WHERE t.IS_CROSS_BORDER = TRUE GROUP BY t.COUNTERPARTY_COUNTRY
+      ORDER BY TOTAL_VOLUME DESC
+    verified_at: 1790947637
+    verified_by: Semantic Model Generator

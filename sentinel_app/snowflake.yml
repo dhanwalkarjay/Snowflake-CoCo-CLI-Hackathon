@@ -1,0 +1,19 @@
+definition_version: 2
+entities:
+  sentinel:
+    type: streamlit
+    identifier:
+      name: SENTINEL
+      database: SENTINEL_DB
+      schema: APP
+    query_warehouse: SENTINEL_WH
+    runtime_name: SYSTEM$ST_CONTAINER_RUNTIME_PY3_11
+    compute_pool: SYSTEM_COMPUTE_POOL_CPU
+    main_file: streamlit_app.py
+    artifacts:
+      - streamlit_app.py
+      - pages/1_Copilot.py
+      - pages/2_Alert_Queue.py
+      - pages/3_Case_View.py
+      - pages/4_Dashboard.py
+      - pages/5_Audit.py
