@@ -1,3 +1,6 @@
+Name: Jay Dhanwalkar
+Problem Theme 1: Risk, Fraud and Regulatory Intelligence Copilot
+
 # Sentinel
 
 Banking fraud, AML and regulatory-reporting copilot built entirely on Snowflake using Cortex Code.
